@@ -7,13 +7,13 @@ Documentation     A resource file with reusable keywords and variables.
 Library           SeleniumLibrary
 
 *** Variables ***
-${SERVER}         saucedemo.com
+${SERVER}         http://localhost:3000
 ${BROWSER}        Chrome
-${VALID USER}     standard_user
-${VALID PASSWORD}    secret_sauce
-${LOGIN URL}      https://www.${SERVER}/
-${WELCOME URL}    https://www.${SERVER}/inventory.html
-${ERROR URL}      https://www.${SERVER}
+${VALID USER}     student
+${VALID PASSWORD}    123456
+${LOGIN URL}      ${SERVER}/
+${WELCOME URL}    ${SERVER}/users
+${ERROR URL}      ${SERVER}/login
 
 *** Keywords ***
 Open Browser To Login Page
@@ -22,8 +22,8 @@ Open Browser To Login Page
     Login Page Should Be Open
 
 Login Page Should Be Open
-    Title Should Be    Swag Labs
-    Wait Until Page Contains Element    id=user-name    10s
+    Title Should Be    Create Next App
+    Wait Until Page Contains Element    name=username    10s
 
 Go To Login Page
     Go To    ${LOGIN URL}
@@ -31,20 +31,29 @@ Go To Login Page
 
 Input Username
     [Arguments]    ${username}
-    Input Text    id=user-name    ${username}
+    Input Text    name=username    ${username}
 
 Input Password
     [Arguments]    ${password}
-    Input Text    id=password    ${password}
+    Input Text    name=password    ${password}
 
 Submit Credentials
-    Click Button    id=login-button
+    Click Button    xpath=//button[@type='submit']
+    Handle Any Popup
+
+Handle Any Popup
+    [Documentation]    Handle any popup or modal that might appear after login
+    Sleep    2s
+    ${popup_present}=    Run Keyword And Return Status    Page Should Contain Element    css=.swal2-container
+    Run Keyword If    ${popup_present}    Click Element    css=.swal2-confirm
+    Sleep    1s
 
 Welcome Page Should Be Open
-    Wait Until Location Contains    /inventory.html    10s
+    Wait Until Location Contains    /users    10s
     Location Should Be    ${WELCOME URL}
-    Title Should Be    Swag Labs
+    Title Should Be    Create Next App
 
 Login Should Have Failed
-    Wait Until Location Is    ${ERROR URL} 10s
-    Wait Until Page Contains Element    css=[data-test="error"] 10s
+    Location Should Be    ${ERROR URL}
+    Title Should Be    Create Next App
+

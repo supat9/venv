@@ -30,5 +30,5 @@ Login With Invalid Credentials Should Fail
     Login Should Have Failed
 
 Login Should Have Failed
-    Location Should Be    ${ERROR URL}/
-    Title Should Be    Swag Labs
+    Location Should Be    ${ERROR URL}
+    Title Should Be    Create Next App
